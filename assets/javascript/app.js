@@ -23,10 +23,11 @@ function displayQuestions() {
     questionDiv.text(questionBank[i].question);
     $('#test').append(questionDiv);
     for ( var j = 0; j < questionBank[i].answers.length; j++) {
-      $('#test').append("<input type='radio' name='question-" + i +
-      "' value='" + questionBank[i].answers[j] + "" + "data-index=" + j + ''>" + questionBank[i].answers[j]);
+      $('#test').append(`<input type="radio" name="question-${i}" value="${questionBank[i].answers[j]}" data-index="${j}"> ${questionBank[i].answers[j]}`);
     }
   }
+
+  
   var submitButton = $('<button>');
   submitButton.text('Submit');
   submitButton.attr('class', 'submit');
