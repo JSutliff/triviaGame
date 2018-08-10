@@ -29,6 +29,7 @@ function displayQuestions() {
   var submitButton = $('<button>');
   submitButton.text('Submit');
   submitButton.attr('class', 'submit');
+  submitButton.attr('type', 'submit');
   $('#test').append('<br>');
   $('#test').append(submitButton);
 }
@@ -54,13 +55,12 @@ function countDown() {
     if (count > 0) {
       count--;
       $('#timer').html(count);
+    } else if (count === 0) {
+      $(submitButton).submit();
     }
   }
   setInterval(timer, 1000);
 }
 
-if (count === 0) {
-  $('#questionForm').submit();
-}
 
 countDown();
