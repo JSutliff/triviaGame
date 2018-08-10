@@ -10,7 +10,7 @@ var questionBank = [
     correctAnswer: 0
   }, 
   {
-    question: 'Is the sky blue?',
+    question: 'Why is the chicken angry?',
     answers: ['Yes', 'No', 'Maybe', 'What'],
     correctAnswer: 0
   }
@@ -47,3 +47,18 @@ function gradeQuiz() {
     console.log($(this));
   })
 }
+
+var count = 30;
+
+function countDown() {
+  $('#timer').html(count);
+  function timer() {
+    if (count > 0) {
+      count--;
+      $('#timer').html(count);
+    }
+  }
+  setInterval(timer, 1000);
+}
+
+countDown();
