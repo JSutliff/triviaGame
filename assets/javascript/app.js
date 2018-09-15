@@ -1,66 +1,126 @@
-var questionBank = [
-  {
-    question: 'Is this a test question?',
-    answers: ['No', 'Yes', 'Maybe', 'What'],
-    correctAnswer: 1
-  }, 
-  {
-    question: 'Is the sky blue?',
-    answers: ['Yes', 'No', 'Maybe', 'What'],
-    correctAnswer: 0
-  }, 
-  {
-    question: 'Why is the chicken angry?',
-    answers: ['Yes', 'No', 'Maybe', 'What'],
-    correctAnswer: 0
-  }
+var questions = [
+  {question: 'Question 1: Jerry Garcia is the greatest guitar player of all time?',
+  answers: [true, false],
+  correct: true},
+  {question: 'Question 2: The Grateful Dead has played less than 1,500 live shows.',
+  answers: [true, false],
+  correct: false},
+  {question: 'Question 3: Bill Walton is a founding member of the Grateful Dead',
+  answers: [true, false],
+  correct: false},
+  {question: 'Question 4: The Grateful Dead was formed in the days of the Acid Test.',
+  answers: [true, false],
+  correct: true},
+  {question: 'Question 5: The Grateful Dead rarely played a live show.',
+  answers: [true, false],
+  correct: false},
+  {question: 'Question 6: No one in the Grateful Dead has ever tried psychedelics.',
+  answers: [true, false],
+  correct: false},
+  {question: 'Question 7: The Grateful Dead has a cult-like following.',
+  answers: [true, false],
+  correct: true},
+  {question: 'Question 8: If you are not a head you are behind',
+  answers: [true, false],
+  correct: true},
+  {question: 'Question 9: Sometimes you get shown the light in the strangest of places if you look at it right.',
+  answers: [true, false],
+  correct: true},
+  {question: 'Question 10: The Brent years are the greatest years',
+  answers: [true, false],
+  correct: true}
 ];
 
-function displayQuestions() {
-  console.log('this function ran');
-  for (var i = 0; i < questionBank.length; i++) {
-    var questionDiv = $('<h2>');
-    questionDiv.html(questionBank[i].question);
-    $('#questionForm').append(questionDiv);
-    for ( var j = 0; j < questionBank[i].answers.length; j++) {
-      $('#questionForm').append(`<input type="radio" name="question-${i}" value="${questionBank[i].answers[j]}" data-index="${j}"> ${questionBank[i].answers[j]}`);
-    }
-  }
-  var submitButton = $('<button>');
-  submitButton.text('Submit');
-  submitButton.attr('class', 'submit');
-  submitButton.attr('type', 'submit');
-  $('#test').append('<br>');
-  $('#test').append(submitButton);
-}
+var answers = [];
+
+var questionsAnswered = 0;
+var correctAnswers = 0;
+var questionsRemaining = 10;
+
+var timeRemaining = 60;
 
 
-$(document).on('click', '.submit',  function(){
-  gradeQuiz();
-});
-
-displayQuestions();
-
-function gradeQuiz() {
-  $.each($('input[name="question-0"]:checked'), function() {
-    console.log($(this));
-  })
-}
-
-var count = 10;
 
 function countDown() {
-  $('#timer').html(count);
+  $('#timer').html(`<p>Time Remaining: ${timeRemaining}</p>`).css('font-size', 32);
   function timer() {
-    if (count > 0) {
-      count--;
-      $('#timer').html(count);
-    } else if (count === 0) {
-      $(submitButton).submit();
+    if (timeRemaining > 0) {
+      timeRemaining--;
+      $('#timer').html(`<p>Time Remaining: ${timeRemaining}</p>`);
+    } else if (timeRemaining === 0) {
+      clearInterval(intervalId);
+      gradeQuiz();
     }
   }
-  setInterval(timer, 1000);
+  var intervalId = setInterval(timer, 1000);
+}
+
+function renderPageLoad() {
+  $('#startButton').show();
+  $('#timer').hide();
+  $('#test').hide();
+  $('#questionForm').hide();
+};
+
+function newQuiz() {
+  $('#startButton').hide();
+  $('#timer').show();
+  $('#test').show();
+  $('#questionForm').show();
+};
+
+function displayQuestions() {
+  questions.forEach(function(elem, i) {
+    var questionDiv = $('<h2>');
+    questionDiv.html(elem.question);
+    $('#questionForm').append(questionDiv);
+    $('#questionForm').append(`<button class="uk-button uk-button-secondary trueButton" value="true" id="true${i}">True</button>`)
+    $('#questionForm').append(` <button class="uk-button uk-button-danger falseButton" value="false" id="false${i}">False</button>`)
+    $(`#true${i}`).on('click', function(e) {
+      e.preventDefault();
+      $(`#false${i}`).hide();
+      answers.push(true);
+    });
+    $(`#false${i}`).on('click', function(e) {
+      e.preventDefault();
+      $(`#true${i}`).hide();
+      answers.push(false);
+    });
+  })
+  $('#questionForm').append(`<button class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom submit">Submit</button>`)
+  $(`.submit`).on('click', function(e) {
+    e.preventDefault();
+    gradeQuiz();
+  });
+}
+
+$(document).on('ready', function() {
+  renderPageLoad();
+  answers = [];
+  questionsAnswered = 0;
+  correctAnswers = 0;
+  questionsRemaining = 10;
+});
+
+  
+$('#startButton').on('click', function() {
+  newQuiz();
+  displayQuestions();
+  countDown();
+});
+
+function gradeQuiz() {
+  for (var i = 0; i < questions.length; i++) {
+    if (questions[i].correct === answers[i]) {
+      correctAnswers++;
+    }
+  }
+  $('#startButton').hide();
+  $('#timer').hide();
+  $('#test').hide();
+  $('#questionForm').hide();
+  $('#correct').append(`<h3>You got answers ${correctAnswers} correct!</h3>`);
 }
 
 
-countDown();
+
